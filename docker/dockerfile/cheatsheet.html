@@ -1,0 +1,486 @@
+<title>Dockerfile Instructions — Cheat Sheet</title>
+<style>
+  :root {
+    --paper: #fbfcfd;
+    --card: #ffffff;
+    --ink: #111820;
+    --slate: #566675;
+    --accent: #0b63c4;
+    --accent-ink: #084a95;
+    --tint: #eaf2fb;
+    --border: #d6dee6;
+    --code-bg: #f2f5f8;
+    --warn: #b4531a;
+    --shadow: 0 1px 2px rgba(17, 24, 32, .06), 0 1px 1px rgba(17, 24, 32, .04);
+    --mono: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #0e1319;
+      --card: #161d26;
+      --ink: #e7edf3;
+      --slate: #9aabbb;
+      --accent: #6fb3ff;
+      --accent-ink: #a9d0ff;
+      --tint: #17293e;
+      --border: #273241;
+      --code-bg: #0b1017;
+      --warn: #e39a6a;
+      --shadow: none;
+    }
+  }
+  :root[data-theme="light"] {
+    --paper: #fbfcfd; --card: #ffffff; --ink: #111820; --slate: #566675;
+    --accent: #0b63c4; --accent-ink: #084a95; --tint: #eaf2fb; --border: #d6dee6;
+    --code-bg: #f2f5f8; --warn: #b4531a; --shadow: 0 1px 2px rgba(17,24,32,.06), 0 1px 1px rgba(17,24,32,.04);
+  }
+  :root[data-theme="dark"] {
+    --paper: #0e1319; --card: #161d26; --ink: #e7edf3; --slate: #9aabbb;
+    --accent: #6fb3ff; --accent-ink: #a9d0ff; --tint: #17293e; --border: #273241;
+    --code-bg: #0b1017; --warn: #e39a6a; --shadow: none;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.45;
+    margin: 0;
+    padding: 28px clamp(16px, 4vw, 44px) 56px;
+    font-size: 14px;
+  }
+  .sheet { max-width: 1180px; margin: 0 auto; }
+
+  /* ---------- Header ---------- */
+  header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px 32px;
+    padding-bottom: 16px;
+    border-bottom: 2.5px solid var(--ink);
+    margin-bottom: 22px;
+  }
+  .title-wrap { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  h1 {
+    font-size: clamp(24px, 3.5vw, 34px);
+    letter-spacing: -.02em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  h1 .whale { color: var(--accent); }
+  .subtitle { color: var(--slate); font-size: 13px; max-width: 46ch; margin: 4px 0 0; }
+  .rev {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--slate);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    text-align: right;
+    line-height: 1.7;
+  }
+  .rev b { color: var(--ink); }
+
+  /* ---------- Legend ---------- */
+  .legend {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 10px 20px;
+    background: var(--tint);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 22px;
+    font-size: 12.5px;
+  }
+  .legend div { display: flex; gap: 8px; align-items: baseline; }
+  .legend .k {
+    font-family: var(--mono);
+    font-weight: 600;
+    color: var(--accent-ink);
+    white-space: nowrap;
+  }
+  .legend .v { color: var(--slate); }
+
+  /* ---------- Card grid ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 14px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 12px 14px 13px;
+    box-shadow: var(--shadow);
+    break-inside: avoid;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .card.deprecated { opacity: .78; }
+  .card.capstone { border-color: var(--accent); border-width: 1.5px; }
+
+  .card-head { display: flex; align-items: center; gap: 9px; }
+  .num {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--slate);
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 1px 6px;
+    min-width: 26px;
+    text-align: center;
+  }
+  .name {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -.01em;
+    color: var(--accent);
+  }
+  .tag {
+    margin-left: auto;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    font-weight: 600;
+    color: var(--warn);
+    border: 1px solid currentColor;
+    border-radius: 20px;
+    padding: 1px 8px;
+  }
+  .what { font-size: 13px; color: var(--ink); margin: 0; }
+  .card code, .syntax, .note code {
+    font-family: var(--mono);
+  }
+  .syntax {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 7px 9px;
+    font-size: 12px;
+    color: var(--ink);
+    overflow-x: auto;
+    white-space: pre;
+    line-height: 1.5;
+  }
+  .syntax .cm { color: var(--slate); }
+  .syntax .kw { color: var(--accent-ink); font-weight: 600; }
+  .note {
+    font-size: 12px;
+    color: var(--slate);
+    margin: 0;
+    padding-left: 15px;
+    position: relative;
+  }
+  .note::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .note.warn::before { content: "!"; color: var(--warn); font-weight: 800; }
+  .note code { background: var(--code-bg); padding: 0 3px; border-radius: 3px; font-size: 11.5px; }
+
+  /* ---------- Section label ---------- */
+  .band {
+    grid-column: 1 / -1;
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: var(--slate);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 0 4px;
+    margin-top: 4px;
+  }
+
+  /* ---------- Commands footer ---------- */
+  .commands {
+    margin-top: 26px;
+    border-top: 2px solid var(--ink);
+    padding-top: 16px;
+  }
+  .commands h2 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    margin: 0 0 12px;
+    color: var(--ink);
+  }
+  .cmd-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 8px 22px;
+  }
+  .cmd { display: flex; gap: 10px; align-items: baseline; font-size: 12.5px; break-inside: avoid; }
+  .cmd .lbl { color: var(--slate); min-width: 108px; }
+  .cmd code {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink);
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 7px;
+    flex: 1;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  footer {
+    margin-top: 26px;
+    font-size: 11px;
+    color: var(--slate);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+  }
+
+  /* ---------- Print ---------- */
+  @media print {
+    :root {
+      --paper: #fff; --card: #fff; --ink: #000; --slate: #444;
+      --accent: #0b4a95; --accent-ink: #0b4a95; --tint: #eef3f8;
+      --border: #b9c3cd; --code-bg: #f1f4f7; --warn: #8a3d13; --shadow: none;
+    }
+    @page { margin: 12mm; }
+    body { padding: 0; font-size: 9.4pt; }
+    .grid { grid-template-columns: repeat(3, 1fr); gap: 7px; }
+    .card { padding: 8px 9px; gap: 5px; border-radius: 6px; }
+    .name { font-size: 11pt; }
+    .cmd-grid { grid-template-columns: repeat(2, 1fr); }
+    .no-print { display: none !important; }
+    header { border-bottom-width: 2px; }
+  }
+
+  /* ---------- Print button ---------- */
+  .print-btn {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 10;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--accent);
+    border: none;
+    border-radius: 999px;
+    padding: 11px 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(11, 99, 196, .35);
+  }
+  .print-btn:hover { background: var(--accent-ink); }
+  .print-btn:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 2px; }
+</style>
+
+<div class="sheet">
+  <header>
+    <div class="title-wrap">
+      <div>
+        <h1><span class="whale">🐳</span> Dockerfile Instructions</h1>
+        <p class="subtitle">A one-page reference for every instruction — syntax, purpose, and the gotcha that matters.</p>
+      </div>
+    </div>
+    <div class="rev">
+      Sunrise 2026 · Teaching lab<br>
+      <b>19</b> instructions covered<br>
+      Tested on Docker <b>29.x</b>
+    </div>
+  </header>
+
+  <div class="legend">
+    <div><span class="k">Shell form</span><span class="v"><code>RUN cmd</code> → runs via <code>/bin/sh -c</code></span></div>
+    <div><span class="k">Exec form</span><span class="v"><code>RUN ["cmd","arg"]</code> → no shell (JSON)</span></div>
+    <div><span class="k">Build time</span><span class="v">FROM · RUN · COPY · ARG happen at <code>build</code></span></div>
+    <div><span class="k">Run time</span><span class="v">CMD · ENTRYPOINT happen at <code>run</code></span></div>
+  </div>
+
+  <div class="grid">
+
+    <div class="band">Foundation &amp; filesystem</div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">01</span><span class="name">FROM</span></div>
+      <p class="what">Sets the base image. Every Dockerfile starts here.</p>
+      <div class="syntax"><span class="kw">FROM</span> image:tag [<span class="kw">AS</span> name]</div>
+      <p class="note">Always pin a tag — never rely on the moving <code>:latest</code>.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">02</span><span class="name">WORKDIR</span></div>
+      <p class="what">Sets the working directory for later instructions.</p>
+      <div class="syntax"><span class="kw">WORKDIR</span> /app</div>
+      <p class="note">Creates the dir. Never use <code>RUN cd</code> — the change is lost.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">03</span><span class="name">COPY</span></div>
+      <p class="what">Copies files from the build context into the image.</p>
+      <div class="syntax"><span class="kw">COPY</span> src dest/</div>
+      <p class="note">Src must be inside the context — <code>../file</code> fails. Prefer over ADD.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">04</span><span class="name">ADD</span></div>
+      <p class="what">Like COPY, but auto-extracts tars &amp; fetches URLs.</p>
+      <div class="syntax"><span class="kw">ADD</span> stuff.tar.gz /dest/</div>
+      <p class="note">Only reach for it to unpack a local archive; otherwise use COPY.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">05</span><span class="name">RUN</span></div>
+      <p class="what">Executes a command at build time — creates a layer.</p>
+      <div class="syntax"><span class="kw">RUN</span> apk add --no-cache curl</div>
+      <p class="note">Chain with <code>&amp;&amp;</code> and clean up in the same RUN to keep layers small.</p>
+    </div>
+
+    <div class="band">Configuration</div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">06</span><span class="name">ENV</span></div>
+      <p class="what">Sets env vars that persist into the running container.</p>
+      <div class="syntax"><span class="kw">ENV</span> KEY=value</div>
+      <p class="note">Override with <code>-e</code> at run. Never store secrets here.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">07</span><span class="name">ARG</span></div>
+      <p class="what">Build-time variable. Does <b>not</b> persist to run time.</p>
+      <div class="syntax"><span class="kw">ARG</span> NAME=default</div>
+      <p class="note">Pass <code>--build-arg</code>. Assign to an ENV to keep it at run time.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">08</span><span class="name">EXPOSE</span></div>
+      <p class="what">Documents the port(s) the container listens on.</p>
+      <div class="syntax"><span class="kw">EXPOSE</span> 80/tcp</div>
+      <p class="note warn">Doesn't publish — you still need <code>-p 8080:80</code> at run.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">13</span><span class="name">LABEL</span></div>
+      <p class="what">Adds metadata (key=value) to the image.</p>
+      <div class="syntax"><span class="kw">LABEL</span> version="1.0"</div>
+      <p class="note">Use OCI keys (<code>org.opencontainers.image.*</code>); read via <code>docker inspect</code>.</p>
+    </div>
+
+    <div class="band">Startup behavior</div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">09</span><span class="name">CMD</span></div>
+      <p class="what">Default command/args when the container runs.</p>
+      <div class="syntax"><span class="kw">CMD</span> ["echo", "hi"]</div>
+      <p class="note">Overridden by run args. Only the last CMD counts.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">10</span><span class="name">ENTRYPOINT</span></div>
+      <p class="what">The executable that always runs; CMD becomes its args.</p>
+      <div class="syntax"><span class="kw">ENTRYPOINT</span> ["echo"]
+<span class="kw">CMD</span> ["world"]  <span class="cm"># default arg</span></div>
+      <p class="note">Replace it at run with <code>--entrypoint</code>. Prefer exec form.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">16</span><span class="name">STOPSIGNAL</span></div>
+      <p class="what">The signal sent to stop the container.</p>
+      <div class="syntax"><span class="kw">STOPSIGNAL</span> SIGTERM</div>
+      <p class="note warn">Exec-form ENTRYPOINT makes your app PID 1 so it receives the signal.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">14</span><span class="name">HEALTHCHECK</span></div>
+      <p class="what">Tells Docker how to test the container is healthy.</p>
+      <div class="syntax"><span class="kw">HEALTHCHECK</span> --interval=10s \
+  <span class="kw">CMD</span> wget -q -O- localhost || exit 1</div>
+      <p class="note">Exit <code>0</code> = healthy, <code>1</code> = unhealthy. Shows in <code>docker ps</code>.</p>
+    </div>
+
+    <div class="band">Runtime environment &amp; security</div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">11</span><span class="name">VOLUME</span></div>
+      <p class="what">Declares a mount point for persistent/shared data.</p>
+      <div class="syntax"><span class="kw">VOLUME</span> ["/data"]</div>
+      <p class="note">Data survives container removal. Write files before declaring it.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">12</span><span class="name">USER</span></div>
+      <p class="what">Sets the user that RUN/CMD/ENTRYPOINT run as.</p>
+      <div class="syntax"><span class="kw">USER</span> appuser</div>
+      <p class="note warn">Don't run as root. Create the user first, then switch.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">17</span><span class="name">SHELL</span></div>
+      <p class="what">Changes the default shell for shell-form commands.</p>
+      <div class="syntax"><span class="kw">SHELL</span> ["/bin/bash", "-euo", "pipefail", "-c"]</div>
+      <p class="note">Only affects shell form — exec form never uses a shell.</p>
+    </div>
+
+    <div class="band">Advanced &amp; legacy</div>
+
+    <div class="card capstone">
+      <div class="card-head"><span class="num">19</span><span class="name">COPY --from</span><span class="tag" style="color:var(--accent)">multi-stage</span></div>
+      <p class="what">Copies artifacts between build stages.</p>
+      <div class="syntax"><span class="kw">FROM</span> golang <span class="kw">AS</span> build
+...
+<span class="kw">COPY</span> --from=build /app/bin .</div>
+      <p class="note">Build fat, ship slim — final image drops the toolchain &amp; source.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">15</span><span class="name">ONBUILD</span></div>
+      <p class="what">Registers a trigger that fires in a child image.</p>
+      <div class="syntax"><span class="kw">ONBUILD</span> COPY . /app</div>
+      <p class="note">Runs only in direct children, right after their <code>FROM</code>.</p>
+    </div>
+
+    <div class="card deprecated">
+      <div class="card-head"><span class="num">18</span><span class="name">MAINTAINER</span><span class="tag">deprecated</span></div>
+      <p class="what">Old way to set the image author.</p>
+      <div class="syntax"><span class="cm"># use this instead:</span>
+<span class="kw">LABEL</span> maintainer="you@example.com"</div>
+      <p class="note">Deprecated since 2017 — migrate to <code>LABEL maintainer</code>.</p>
+    </div>
+
+  </div>
+
+  <div class="commands">
+    <h2>Everyday commands</h2>
+    <div class="cmd-grid">
+      <div class="cmd"><span class="lbl">Build</span><code>docker build -t myimg .</code></div>
+      <div class="cmd"><span class="lbl">Build w/ arg</span><code>docker build --build-arg V=2.0 -t myimg .</code></div>
+      <div class="cmd"><span class="lbl">Run</span><code>docker run --rm myimg</code></div>
+      <div class="cmd"><span class="lbl">Run + port</span><code>docker run -d -p 8080:80 --name c myimg</code></div>
+      <div class="cmd"><span class="lbl">Run + volume</span><code>docker run -v data:/data myimg</code></div>
+      <div class="cmd"><span class="lbl">Override cmd</span><code>docker run --rm myimg sh</code></div>
+      <div class="cmd"><span class="lbl">List running</span><code>docker ps</code></div>
+      <div class="cmd"><span class="lbl">List images</span><code>docker images</code></div>
+      <div class="cmd"><span class="lbl">Logs</span><code>docker logs c</code></div>
+      <div class="cmd"><span class="lbl">Inspect</span><code>docker inspect myimg</code></div>
+      <div class="cmd"><span class="lbl">Layer history</span><code>docker history myimg</code></div>
+      <div class="cmd"><span class="lbl">Stop &amp; remove</span><code>docker rm -f c</code></div>
+    </div>
+  </div>
+
+  <footer>
+    <span>Pair with the hands-on lab: one folder per instruction, each with a working Dockerfile.</span>
+    <span>Rule of thumb: prefer COPY over ADD · exec form over shell form · non-root over root.</span>
+  </footer>
+</div>
+
+<button class="print-btn no-print" onclick="window.print()">⎙ Print / Save PDF</button>
