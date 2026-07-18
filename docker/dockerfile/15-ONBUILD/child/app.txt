@@ -1,1 +1,0 @@
-This app.txt file gets copied by the parent ONBUILD trigger.

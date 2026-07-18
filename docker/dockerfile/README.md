@@ -30,11 +30,9 @@ the **expected output**.
 | 12 | `12-USER` | `USER` | Sets the user that RUN/CMD/ENTRYPOINT run as |
 | 13 | `13-LABEL` | `LABEL` | Adds metadata (key=value) to the image |
 | 14 | `14-HEALTHCHECK` | `HEALTHCHECK` | Tells Docker how to test the container is healthy |
-| 15 | `15-ONBUILD` | `ONBUILD` | Triggers instructions in a **child** image |
-| 16 | `16-STOPSIGNAL` | `STOPSIGNAL` | The signal sent to stop the container |
-| 17 | `17-SHELL` | `SHELL` | Changes the default shell for shell-form commands |
-| 18 | `18-MAINTAINER` | `MAINTAINER` | **Deprecated** — use LABEL instead (shown for history) |
-| 19 | `19-multistage-COPY-from` | `COPY --from` | Multi-stage builds — copy artifacts between stages |
+| 15 | `15-SHELL` | `SHELL` | Changes the default shell for shell-form commands |
+| 16 | `16-MAINTAINER` | `MAINTAINER` | **Deprecated** — use LABEL instead (shown for history) |
+| 17 | `17-multistage-COPY-from` | `COPY --from` | Multi-stage builds — copy artifacts between stages |
 | 99 | `99-all-in-one` | *all* | One realistic Dockerfile using every key instruction |
 
 ## How to teach with this
@@ -65,4 +63,4 @@ Many instructions (`RUN`, `CMD`, `ENTRYPOINT`) accept two forms:
 - **Exec form**: `RUN ["apt-get", "update"]` → runs the binary directly (JSON array, no shell)
 
 Prefer **exec form** for `CMD`/`ENTRYPOINT` so signals (like Ctrl-C / SIGTERM)
-reach your process correctly. This is covered in `16-STOPSIGNAL`.
+reach your process correctly.
