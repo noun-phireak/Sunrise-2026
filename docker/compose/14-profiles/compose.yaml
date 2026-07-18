@@ -1,0 +1,18 @@
+# See README.md for full notes.
+# `profiles` mark services as OPTIONAL. A service with a profile only starts
+# when that profile is activated (--profile or COMPOSE_PROFILES).
+services:
+  app:
+    image: alpine:3.20
+    command: echo "core app — always starts"
+    # no profile => part of the default set
+
+  debug-tools:
+    image: alpine:3.20
+    command: echo "debug tools — only with --profile debug"
+    profiles: ["debug"]
+
+  seed:
+    image: alpine:3.20
+    command: echo "seeding data — only with --profile setup"
+    profiles: ["setup"]

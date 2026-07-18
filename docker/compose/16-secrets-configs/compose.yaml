@@ -1,0 +1,23 @@
+# See README.md for full notes.
+# `secrets` and `configs` mount data into containers as files under
+# /run/secrets/<name> and /<name> — instead of baking them into the image or env.
+services:
+  app:
+    image: alpine:3.20
+    secrets:
+      - db_password              # mounted at /run/secrets/db_password
+    configs:
+      - source: app_config
+        target: /etc/app/config.json
+    command: sh -c '
+      echo "secret  -> $$(cat /run/secrets/db_password)";
+      echo "config  -> $$(cat /etc/app/config.json)"'
+
+# Top-level declarations, sourced from files on the host:
+secrets:
+  db_password:
+    file: ./db_password.txt
+
+configs:
+  app_config:
+    file: ./app_config.json

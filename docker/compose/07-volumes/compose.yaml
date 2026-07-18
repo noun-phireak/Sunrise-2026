@@ -1,0 +1,21 @@
+# See README.md for full notes.
+# Two kinds of mounts:
+#   - NAMED volume  (managed by Docker, survives `down`)    -> data:/data
+#   - BIND mount    (a host folder mapped into the container) -> ./site:/usr/share/nginx/html
+services:
+  writer:
+    image: alpine:3.20
+    volumes:
+      - data:/data                       # named volume
+    command: sh -c 'date >> /data/log.txt; echo "---- /data/log.txt ----"; cat /data/log.txt'
+
+  web:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./site:/usr/share/nginx/html:ro  # bind mount, read-only
+
+# Named volumes must be declared at the top level:
+volumes:
+  data:

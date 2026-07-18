@@ -1,0 +1,14 @@
+# See README.md for full notes.
+# `healthcheck` tells Compose how to test that a service is actually WORKING,
+# not just running. Status shows up as (healthy) / (unhealthy) in `ps`.
+services:
+  web:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost:80/"]
+      interval: 5s       # how often to run the check
+      timeout: 3s        # fail the check if it takes longer than this
+      retries: 3         # consecutive failures before marking (unhealthy)
+      start_period: 5s   # grace time on boot before failures count

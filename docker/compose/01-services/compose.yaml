@@ -1,0 +1,7 @@
+# See README.md for full notes.
+# The unit of Compose is a "service" — one container spec under `services:`.
+# `docker compose up` reads this file and starts every service in it.
+services:
+  hello:
+    image: alpine:3.20
+    command: echo "Hello from Compose — I am the 'hello' service"

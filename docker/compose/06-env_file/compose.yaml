@@ -1,0 +1,8 @@
+# See README.md for full notes.
+# `env_file:` loads variables from a file INTO the container.
+services:
+  app:
+    image: alpine:3.20
+    env_file:
+      - app.env
+    command: sh -c 'echo "$$APP_NAME is listening on port $$PORT ($$STAGE)"'

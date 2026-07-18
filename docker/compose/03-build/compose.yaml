@@ -1,0 +1,10 @@
+# See README.md for full notes.
+# `build:` tells Compose to BUILD an image from a Dockerfile instead of pulling.
+services:
+  app:
+    build:
+      context: .                 # folder sent to the build (the "build context")
+      dockerfile: Dockerfile     # which Dockerfile to use (default: Dockerfile)
+      args:
+        APP_VERSION: "2.0"       # passed to the Dockerfile's ARG APP_VERSION
+    image: lab-compose-build:latest   # name/tag the resulting image

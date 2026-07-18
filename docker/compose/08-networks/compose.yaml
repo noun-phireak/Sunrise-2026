@@ -1,0 +1,22 @@
+# See README.md for full notes.
+# Every Compose project gets a default network. Services find each other by
+# SERVICE NAME as the DNS hostname — no IPs, no ports published to the host.
+services:
+  api:
+    image: hashicorp/http-echo
+    command: ["-text=hello from the api service", "-listen=:5678"]
+    networks:
+      - backend
+
+  client:
+    image: alpine:3.20
+    networks:
+      - backend
+    # `api` resolves to the api service; wget proves service-to-service DNS works.
+    command: sh -c 'apk add --no-cache wget >/dev/null 2>&1; sleep 2; wget -qO- http://api:5678'
+    depends_on:
+      - api
+
+# Declaring a custom network is optional but explicit & good practice:
+networks:
+  backend:

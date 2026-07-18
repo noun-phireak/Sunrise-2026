@@ -1,0 +1,7 @@
+# A reusable base definition that other Compose files can `extends:`.
+services:
+  base-logger:
+    image: alpine:3.20
+    restart: on-failure
+    environment:
+      LOG_LEVEL: info

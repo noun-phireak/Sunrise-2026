@@ -1,0 +1,10 @@
+# See README.md for full notes.
+# Run MULTIPLE containers of one service. Two ways:
+#   1) `docker compose up --scale worker=3`
+#   2) `deploy.replicas` (below), applied by `docker compose up`
+services:
+  worker:
+    image: alpine:3.20
+    command: sh -c 'echo "worker $$HOSTNAME reporting for duty"; sleep 3600'
+    deploy:
+      replicas: 3        # start 3 identical worker containers

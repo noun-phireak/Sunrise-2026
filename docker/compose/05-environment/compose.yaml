@@ -1,0 +1,11 @@
+# See README.md for full notes.
+# `environment:` sets env vars inside the container (like `docker run -e`).
+services:
+  app:
+    image: alpine:3.20
+    environment:
+      APP_NAME: "Sunrise Demo"
+      GREETING: "Hello student"
+    # NOTE: in Compose, `$$` means a LITERAL `$` (a single `$` would be
+    # interpolated by Compose from your host env before the container starts).
+    command: sh -c 'echo "$$GREETING — running $$APP_NAME"'

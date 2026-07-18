@@ -1,0 +1,30 @@
+# See README.md for full notes.
+# Two ways to stay DRY (Don't Repeat Yourself):
+#   1) YAML ANCHORS (&name / *name) — reuse a block within THIS file
+#   2) `extends` — inherit a service definition (even from another file)
+
+# `x-` keys are custom "extension fields": ignored by Compose, reusable as anchors.
+x-common: &common
+  image: alpine:3.20
+  restart: on-failure
+  environment:
+    STAGE: production
+
+services:
+  api:
+    <<: *common                       # merge in the anchored block
+    command: echo "api — inherits image, restart, STAGE via anchor"
+
+  worker:
+    <<: *common                       # same shared defaults...
+    environment:
+      STAGE: production
+      ROLE: worker                    # ...with per-service additions
+    command: echo "worker — same defaults, extra env"
+
+  # `extends` pulls a definition from another file (see common.yaml):
+  logger:
+    extends:
+      file: common.yaml
+      service: base-logger
+    command: echo "logger — extended from common.yaml"

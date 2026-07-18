@@ -1,0 +1,20 @@
+# See README.md for full notes.
+# `depends_on` controls STARTUP ORDER. With `condition: service_healthy`,
+# Compose waits until the dependency's healthcheck passes before starting.
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: secret
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  app:
+    image: alpine:3.20
+    depends_on:
+      db:
+        condition: service_healthy   # wait for db to be HEALTHY, not just started
+    command: sh -c 'echo "DB is healthy — app starting now"'

@@ -1,0 +1,5 @@
+# See README.md for full notes.
+# `image:` tells Compose to PULL and run a prebuilt image from a registry.
+services:
+  cache:
+    image: redis:7-alpine

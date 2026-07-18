@@ -1,0 +1,7 @@
+# See README.md for full notes.
+# `ports:` publishes a container port to the host  ->  "HOST:CONTAINER".
+services:
+  web:
+    image: nginx:alpine
+    ports:
+      - "8080:80"      # reach the container's port 80 at http://localhost:8080

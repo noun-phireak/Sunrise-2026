@@ -1,0 +1,13 @@
+# See README.md for full notes.
+# `entrypoint` and `command` OVERRIDE the image's defaults.
+#   entrypoint = the executable that always runs
+#   command    = the arguments passed to it (or the whole cmd if no entrypoint)
+services:
+  default-cmd:
+    image: alpine:3.20
+    command: ["echo", "command: overrides the image's default CMD"]
+
+  custom-entry:
+    image: alpine:3.20
+    entrypoint: ["sh", "-c"]
+    command: ["echo \"entrypoint + command working together\""]
