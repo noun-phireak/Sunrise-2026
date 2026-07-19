@@ -1,0 +1,25 @@
+services:
+  api:
+    image: ${REGISTRY_IMAGE}:${IMAGE_TAG}
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=password
+      - DB_DATABASE=pos_db
+      - JWT_SECRET=supersecretkey
+    ports:
+      - "3000:3000"
+    networks:
+      - pos_network
+    deploy:
+      replicas: 4
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+networks:
+  pos_network:
+    external: true

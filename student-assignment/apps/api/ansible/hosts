@@ -1,0 +1,12 @@
+[managers]
+manager-01 ansible_host=209.97.170.180
+manager-02 ansible_host=167.71.222.31
+manager-03 ansible_host=146.190.89.192
+
+[workers]
+worker-1 ansible_host=152.42.248.202
+worker-2 ansible_host=146.190.85.145
+
+[all:vars]
+ansible_user=root
+ansible_python_interpreter=/usr/bin/python3

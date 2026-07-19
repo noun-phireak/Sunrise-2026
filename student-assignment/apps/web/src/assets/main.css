@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+@import './base.css';
+
+/* Removed default Vue starter layout styles to allow full page designs */

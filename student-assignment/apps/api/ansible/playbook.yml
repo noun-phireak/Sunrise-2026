@@ -1,0 +1,56 @@
+---
+- name: Manage Docker Swarm Cluster
+  hosts: all
+  become: true
+  vars:
+    network_name: pos_network
+    subnet: "10.10.0.0/16"
+    gateway: "10.10.0.1"
+    registry_url: "{{ lookup('env', 'CI_REGISTRY') }}"
+    registry_user: "{{ lookup('env', 'CI_REGISTRY_USER') }}"
+    registry_password: "{{ lookup('env', 'CI_JOB_TOKEN') }}"
+    registry_image: "{{ lookup('env', 'CI_REGISTRY_IMAGE') }}"
+    image_tag: "{{ lookup('env', 'IMAGE_TAG') }}"
+    
+  tasks:
+    - name: Check if overlay network exists
+      ansible.builtin.shell: docker network ls --filter name=^{{ network_name }}$ --format "{{ '{{.Name}}' }}"
+      register: network_check
+      changed_when: false
+      delegate_to: manager-01
+      run_once: true
+
+
+    - name: Create overlay network if not exists
+      ansible.builtin.shell: >
+        docker network create
+        --driver overlay
+        --attachable
+        --subnet {{ subnet }}
+        --gateway {{ gateway }}
+        {{ network_name }}
+      when: network_check.stdout == ""
+      delegate_to: manager-01
+      run_once: true
+
+    - name: Login to GitLab registry
+      ansible.builtin.shell: >
+        echo "{{ registry_password }}" | docker login {{ registry_url }} -u {{ registry_user }} --password-stdin
+
+    - name: Copy stack file to manager
+      ansible.builtin.copy:
+        src: ../api-stack.yml
+        dest: /tmp/api-stack.yml
+      delegate_to: manager-01
+      run_once: true
+
+    - name: Deploy docker stack
+      ansible.builtin.shell: >
+        REGISTRY_IMAGE={{ registry_image }}
+        IMAGE_TAG={{ image_tag }}
+        docker stack deploy
+        -c /tmp/api-stack.yml
+        --with-registry-auth
+        api 
+      delegate_to: manager-01
+      run_once: true

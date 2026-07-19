@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="50" failures="0" errors="0" time="1.972">
+  <testsuite name="CategoriesService" errors="0" failures="0" skipped="0" timestamp="2026-02-09T07:00:59" time="0.988" tests="7">
+    <testcase classname="CategoriesService should be defined" name="CategoriesService should be defined" time="0.014">
+    </testcase>
+    <testcase classname="CategoriesService create should create a category" name="CategoriesService create should create a category" time="0.005">
+    </testcase>
+    <testcase classname="CategoriesService findAll should return an array of categories" name="CategoriesService findAll should return an array of categories" time="0.005">
+    </testcase>
+    <testcase classname="CategoriesService findOne should return a category by id" name="CategoriesService findOne should return a category by id" time="0.003">
+    </testcase>
+    <testcase classname="CategoriesService update should update a category" name="CategoriesService update should update a category" time="0.016">
+    </testcase>
+    <testcase classname="CategoriesService update should throw an error if category not found" name="CategoriesService update should throw an error if category not found" time="0.006">
+    </testcase>
+    <testcase classname="CategoriesService remove should remove a category" name="CategoriesService remove should remove a category" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="StocksService" errors="0" failures="0" skipped="0" timestamp="2026-02-09T07:00:59" time="0.988" tests="5">
+    <testcase classname="StocksService should be defined" name="StocksService should be defined" time="0.01">
+    </testcase>
+    <testcase classname="StocksService addStock should create a stock request" name="StocksService addStock should create a stock request" time="0.005">
+    </testcase>
+    <testcase classname="StocksService approveStock should approve stock and update inventory" name="StocksService approveStock should approve stock and update inventory" time="0.003">
+    </testcase>
+    <testcase classname="StocksService rejectStock should reject a stock request" name="StocksService rejectStock should reject a stock request" time="0.014">
+    </testcase>
+    <testcase classname="StocksService findAll should return stock history" name="StocksService findAll should return stock history" time="0.004">
+    </testcase>
+  </testsuite>
+  <testsuite name="SuppliersService" errors="0" failures="0" skipped="0" timestamp="2026-02-09T07:00:59" time="0.982" tests="7">
+    <testcase classname="SuppliersService should be defined" name="SuppliersService should be defined" time="0.012">
+    </testcase>
+    <testcase classname="SuppliersService create should create a supplier" name="SuppliersService create should create a supplier" time="0.009">
+    </testcase>
+    <testcase classname="SuppliersService findAll should return an array of suppliers" name="SuppliersService findAll should return an array of suppliers" time="0.002">
+    </testcase>
+    <testcase classname="SuppliersService findOne should return a supplier by id" name="SuppliersService findOne should return a supplier by id" time="0.022">
+    </testcase>
+    <testcase classname="SuppliersService update should update a supplier" name="SuppliersService update should update a supplier" time="0.002">
+    </testcase>
+    <testcase classname="SuppliersService update should throw an error if supplier not found" name="SuppliersService update should throw an error if supplier not found" time="0.011">
+    </testcase>
+    <testcase classname="SuppliersService remove should remove a supplier" name="SuppliersService remove should remove a supplier" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="OrdersService" errors="0" failures="0" skipped="0" timestamp="2026-02-09T07:00:59" time="1.015" tests="4">
+    <testcase classname="OrdersService should be defined" name="OrdersService should be defined" time="0.019">
+    </testcase>
+    <testcase classname="OrdersService create should create an order successfully" name="OrdersService create should create an order successfully" time="0.004">
+    </testcase>
+    <testcase classname="OrdersService create should rollback transaction on error" name="OrdersService create should rollback transaction on error" time="0.025">
+    </testcase>
+    <testcase classname="OrdersService findAll should return all orders" name="OrdersService findAll should return all orders" time="0.003">
+    </testcase>
+  </testsuite>
+  <testsuite name="ProductsService" errors="0" failures="0" skipped="0" timestamp="2026-02-09T07:00:59" time="1.14" tests="3">
+    <testcase classname="ProductsService should be defined" name="ProductsService should be defined" time="0.013">
+    </testcase>
+    <testcase classname="ProductsService create should create a product with an image" name="ProductsService create should create a product with an image" time="0.005">
+    </testcase>
+    <testcase classname="ProductsService findAll should return an array of products" name="ProductsService findAll should return an array of products" time="0.004">
+    </testcase>
+  </testsuite>
+  <testsuite name="AuthService" errors="0" failures="0" skipped="0" timestamp="2026-02-09T07:01:00" time="0.22" tests="1">
+    <testcase classname="AuthService should be defined" name="AuthService should be defined" time="0.005">
+    </testcase>
+  </testsuite>
+  <testsuite name="CategoriesController" errors="0" failures="0" skipped="0" timestamp="2026-02-09T07:00:59" time="1.252" tests="6">
+    <testcase classname="CategoriesController should be defined" name="CategoriesController should be defined" time="0.015">
+    </testcase>
+    <testcase classname="CategoriesController create should create a category" name="CategoriesController create should create a category" time="0.003">
+    </testcase>
+    <testcase classname="CategoriesController findAll should return an array of categories" name="CategoriesController findAll should return an array of categories" time="0.003">
+    </testcase>
+    <testcase classname="CategoriesController findOne should return a category" name="CategoriesController findOne should return a category" time="0.001">
+    </testcase>
+    <testcase classname="CategoriesController update should update a category" name="CategoriesController update should update a category" time="0.002">
+    </testcase>
+    <testcase classname="CategoriesController remove should remove a category" name="CategoriesController remove should remove a category" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="SuppliersController" errors="0" failures="0" skipped="0" timestamp="2026-02-09T07:00:59" time="1.279" tests="6">
+    <testcase classname="SuppliersController should be defined" name="SuppliersController should be defined" time="0.012">
+    </testcase>
+    <testcase classname="SuppliersController create should create a supplier" name="SuppliersController create should create a supplier" time="0.008">
+    </testcase>
+    <testcase classname="SuppliersController findAll should return an array of suppliers" name="SuppliersController findAll should return an array of suppliers" time="0.005">
+    </testcase>
+    <testcase classname="SuppliersController findOne should return a supplier" name="SuppliersController findOne should return a supplier" time="0.003">
+    </testcase>
+    <testcase classname="SuppliersController update should update a supplier" name="SuppliersController update should update a supplier" time="0.008">
+    </testcase>
+    <testcase classname="SuppliersController remove should remove a supplier" name="SuppliersController remove should remove a supplier" time="0.004">
+    </testcase>
+  </testsuite>
+  <testsuite name="UsersService" errors="0" failures="0" skipped="0" timestamp="2026-02-09T07:01:00" time="0.177" tests="1">
+    <testcase classname="UsersService should be defined" name="UsersService should be defined" time="0.003">
+    </testcase>
+  </testsuite>
+  <testsuite name="AppController" errors="0" failures="0" skipped="0" timestamp="2026-02-09T07:01:01" time="0.105" tests="1">
+    <testcase classname="AppController root should return &quot;Hello World!&quot;" name="AppController root should return &quot;Hello World!&quot;" time="0.01">
+    </testcase>
+  </testsuite>
+  <testsuite name="StocksController" errors="0" failures="0" skipped="0" timestamp="2026-02-09T07:01:00" time="0.364" tests="5">
+    <testcase classname="StocksController should be defined" name="StocksController should be defined" time="0.006">
+    </testcase>
+    <testcase classname="StocksController addStock should add stock" name="StocksController addStock should add stock" time="0.003">
+    </testcase>
+    <testcase classname="StocksController approveStock should approve stock" name="StocksController approveStock should approve stock" time="0.003">
+    </testcase>
+    <testcase classname="StocksController rejectStock should reject stock" name="StocksController rejectStock should reject stock" time="0.001">
+    </testcase>
+    <testcase classname="StocksController findAll should return stock history" name="StocksController findAll should return stock history" time="0.003">
+    </testcase>
+  </testsuite>
+  <testsuite name="OrdersController" errors="0" failures="0" skipped="0" timestamp="2026-02-09T07:01:00" time="0.398" tests="3">
+    <testcase classname="OrdersController should be defined" name="OrdersController should be defined" time="0.003">
+    </testcase>
+    <testcase classname="OrdersController create should create an order" name="OrdersController create should create an order" time="0.002">
+    </testcase>
+    <testcase classname="OrdersController findAll should return all orders" name="OrdersController findAll should return all orders" time="0.005">
+    </testcase>
+  </testsuite>
+  <testsuite name="AuthController" errors="0" failures="0" skipped="0" timestamp="2026-02-09T07:01:00" time="0.421" tests="1">
+    <testcase classname="AuthController should be defined" name="AuthController should be defined" time="0.005">
+    </testcase>
+  </testsuite>
+</testsuites>

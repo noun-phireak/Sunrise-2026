@@ -1,0 +1,151 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_TAG = "${env.gitlabBranch}-${env.GIT_COMMIT[0..7]}"
+        CI_REGISTRY = 'gitlab.akphijun.site:5050'
+        CI_REGISTRY_IMAGE = "${CI_REGISTRY}/sunrise/api"
+    }
+
+    triggers {
+
+        gitlab(
+            triggerOnPush: true,
+            branchFilterType: 'NameBasedFilter',
+            includeBranchesSpec: 'develop',
+            secretToken: "0dfcbabb4698c2b25e21630b0b796ac7d9ac0a6a",
+        )
+
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        
+        stage('Install Dependencies') {
+            agent {
+                docker { image 'node:20-alpine' }
+            }
+            steps {
+                sh 'npm ci'
+                stash includes: 'node_modules/**', name: 'node_modules'
+            }
+        }
+
+        stage('Test') {
+            parallel {
+                stage('Unit Test') {
+                    agent {
+                        docker { image 'node:20-alpine' }
+                    }
+                    steps {
+                        unstash 'node_modules'
+                        sh 'npm run test'
+                    }
+                    post {
+                        always {
+                            junit 'junit.xml'
+                        }
+                    }
+                }
+
+                stage('E2E Test') {
+                    agent {
+                        docker { image 'node:20-alpine' }
+                    }
+                    steps {
+                        unstash 'node_modules'
+                        echo 'e2e test'
+                    }
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'gitlab-registry-credential',
+                        usernameVariable: 'REGISTRY_USER',
+                        passwordVariable: 'REGISTRY_PASSWORD'
+                    )
+                ]) {
+                    sh """
+                        echo "\$REGISTRY_PASSWORD" | docker login -u "\$REGISTRY_USER" --password-stdin ${CI_REGISTRY}
+                        docker build -t ${CI_REGISTRY_IMAGE}:${IMAGE_TAG} .
+                        docker push ${CI_REGISTRY_IMAGE}:${IMAGE_TAG}
+                    """
+                }
+            }
+        }
+        
+        stage('Deploy') {
+            agent {
+                docker {
+                    image 'node:20-alpine'
+                    args '-u root'
+                }
+            }
+            steps {
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'ssh-deploy-key',
+                        keyFileVariable: 'SSH_KEY'
+                        ),
+                    usernamePassword(
+                        credentialsId: 'gitlab-registry-credential',
+                        usernameVariable: 'REGISTRY_USER',
+                        passwordVariable: 'REGISTRY_PASSWORD'
+                    )
+                    ]) 
+                    {
+                    sh """
+                        apk add --no-cache ansible openssh-client
+                        cp "\$SSH_KEY" id_rsa
+                        chmod 600 id_rsa
+                        export CI_REGISTRY="${CI_REGISTRY}"
+                        export CI_REGISTRY_IMAGE="${CI_REGISTRY_IMAGE}"
+                        export IMAGE_TAG="${IMAGE_TAG}"
+                        export CI_JOB_TOKEN="\$REGISTRY_PASSWORD"
+                        export CI_REGISTRY_USER="\$REGISTRY_USER"
+                        ANSIBLE_CONFIG=./ansible.cfg ansible-playbook ansible/playbook.yml
+                    """
+                }
+            }
+            post {
+                always {
+                    sh 'rm -f id_rsa'
+                }
+            }
+        }
+    }
+    post {
+        success {
+            sh """
+                export ENVIRONMENT="develop"
+                export COMMIT_MESSAGE="\$(git log -1 --pretty=%B)"
+                export TRIGGER_BRANCH="${env.gitlabBranch}"
+                export COMMIT_AUTHOR="\$(git log -1 --pretty=%an)"
+                export STATUS="✅ SUCCESS"
+                bash ./scripts/notify-telegram.sh
+            """
+        }
+        failure {
+            sh """
+                export ENVIRONMENT="develop"
+                export COMMIT_MESSAGE="\$(git log -1 --pretty=%B)"
+                export TRIGGER_BRANCH="${env.gitlabBranch}"
+                export COMMIT_AUTHOR="\$(git log -1 --pretty=%an)"
+                export STATUS="❌ FAILURE"
+                bash ./scripts/notify-telegram.sh
+            """
+        }
+        cleanup {
+            cleanWs()
+        }
+    }
+}
